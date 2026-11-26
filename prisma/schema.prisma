@@ -1,0 +1,30 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// Вакансия — первая сущность учебного проекта.
+/// Дальше по плану сюда добавляются Company, Source, Skill и связь many-to-many.
+model Vacancy {
+  id          String    @id @default(uuid()) @db.Uuid
+  title       String
+  company     String
+  url         String    @unique
+  source      String    @default("hh")
+  salaryFrom  Int?
+  salaryTo    Int?
+  currency    String    @default("RUB")
+  remote      Boolean   @default(true)
+  description String?
+  publishedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([company])
+  @@index([publishedAt])
+  @@map("vacancies")
+}
