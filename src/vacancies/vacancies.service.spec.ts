@@ -70,4 +70,12 @@ describe('VacanciesService', () => {
       expect.objectContaining({ skip: 10, take: 10 }),
     );
   });
+
+  it('salaryFrom=0 не теряется (falsy-баг)', async () => {
+    prismaMock.$transaction.mockResolvedValue([[], 0]);
+    await service.findAll({ page: 1, limit: 10, salaryFrom: 0, sortBy: 'publishedAt', order: 'desc' });
+    expect(prismaMock.vacancy.findMany).toHaveBeenCalledWith(
+      expect.objectContaining({ where: expect.objectContaining({ salaryFrom: { gte: 0 } }) }),
+    );
+  });
 });

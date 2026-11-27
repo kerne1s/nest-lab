@@ -10,7 +10,10 @@
     "target": "ES2023",
     "sourceMap": true,
     "outDir": "./dist",
-    "baseUrl": "./",
+    "paths": {
+      "@shared/*": ["./src/shared/*"]
+    },
+    "types": ["node", "jest"],
     "incremental": true,
     "skipLibCheck": true,
     "isolatedModules": true,

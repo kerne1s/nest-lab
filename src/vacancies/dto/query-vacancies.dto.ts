@@ -1,6 +1,7 @@
 import { Type } from 'class-transformer';
-import { IsIn, IsInt, IsOptional, IsString, Max, Min } from 'class-validator';
+import { IsBoolean, IsIn, IsInt, IsOptional, IsString, Max, Min } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
+import { TransformBoolean } from '@shared/utils/decorators/transform-boolean';
 
 export class QueryVacanciesDto {
   @ApiPropertyOptional({ default: 1, minimum: 1 })
@@ -37,4 +38,17 @@ export class QueryVacanciesDto {
   @IsOptional()
   @IsIn(['asc', 'desc'])
   order: 'asc' | 'desc' = 'desc';
+
+  @ApiPropertyOptional({ minimum: 0, description: 'Нижняя граница зарплаты (≥)' })
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(0)
+  salaryFrom?: number;
+
+  @ApiPropertyOptional({ type: Boolean, description: 'true/false' })
+  @IsOptional()
+  @IsBoolean()
+  @TransformBoolean()
+  remote?: boolean;
 }

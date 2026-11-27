@@ -32,7 +32,7 @@ export class VacanciesService {
   }
 
   async findAll(query: QueryVacanciesDto): Promise<Paginated<Vacancy>> {
-    const { page, limit, search, company, sortBy, order } = query;
+    const { page, limit, search, company, salaryFrom, remote, sortBy, order } = query;
 
     const where: Prisma.VacancyWhereInput = {
       ...(company ? { company: { equals: company, mode: 'insensitive' } } : {}),
@@ -44,6 +44,8 @@ export class VacanciesService {
             ],
           }
         : {}),
+      ...(salaryFrom !== undefined ? { salaryFrom: { gte: salaryFrom } } : {}),
+      ...(remote !== undefined ? { remote: { equals: remote } } : {}),
     };
 
     // Два запроса в одной транзакции — но самой транзакции мало.
@@ -56,7 +58,7 @@ export class VacanciesService {
       [
         this.prisma.vacancy.findMany({
           where,
-          orderBy: { [sortBy]: order },
+          orderBy: { [sortBy]: { sort: order, nulls: 'last' } },
           skip: (page - 1) * limit,
           take: limit,
         }),
