@@ -39,14 +39,14 @@ export class QueryVacanciesDto {
   @IsIn(['asc', 'desc'])
   order: 'asc' | 'desc' = 'desc';
 
-  @ApiPropertyOptional({ minimum: 0 })
+  @ApiPropertyOptional({ minimum: 0, description: 'Нижняя граница зарплаты (≥)' })
   @IsOptional()
   @Type(() => Number)
   @IsInt()
   @Min(0)
   salaryFrom?: number;
 
-  @ApiPropertyOptional({ enum: ['true', 'false'] })
+  @ApiPropertyOptional({ type: Boolean, description: 'true/false' })
   @IsOptional()
   @IsBoolean()
   @TransformBoolean()

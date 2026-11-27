@@ -1,6 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma, Vacancy } from '@prisma/client';
-import { isBoolean } from 'class-validator';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateVacancyDto } from './dto/create-vacancy.dto';
 import { QueryVacanciesDto } from './dto/query-vacancies.dto';
@@ -45,8 +44,8 @@ export class VacanciesService {
             ],
           }
         : {}),
-      ...(salaryFrom ? { salaryFrom: { gte: salaryFrom } } : {}),
-      ...(isBoolean(remote) ? { remote: { equals: remote } } : {}),
+      ...(salaryFrom !== undefined ? { salaryFrom: { gte: salaryFrom } } : {}),
+      ...(remote !== undefined ? { remote: { equals: remote } } : {}),
     };
 
     // Два запроса в одной транзакции — но самой транзакции мало.
