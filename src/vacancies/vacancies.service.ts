@@ -59,7 +59,7 @@ export class VacanciesService {
       [
         this.prisma.vacancy.findMany({
           where,
-          orderBy: { [sortBy]: order },
+          orderBy: { [sortBy]: { sort: order, nulls: 'last' } },
           skip: (page - 1) * limit,
           take: limit,
         }),
