@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma, Vacancy } from '@prisma/client';
+import { isBoolean } from 'class-validator';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateVacancyDto } from './dto/create-vacancy.dto';
 import { QueryVacanciesDto } from './dto/query-vacancies.dto';
@@ -32,7 +33,7 @@ export class VacanciesService {
   }
 
   async findAll(query: QueryVacanciesDto): Promise<Paginated<Vacancy>> {
-    const { page, limit, search, company, salaryFrom, sortBy, order } = query;
+    const { page, limit, search, company, salaryFrom, remote, sortBy, order } = query;
 
     const where: Prisma.VacancyWhereInput = {
       ...(company ? { company: { equals: company, mode: 'insensitive' } } : {}),
@@ -45,6 +46,7 @@ export class VacanciesService {
           }
         : {}),
       ...(salaryFrom ? { salaryFrom: { gte: salaryFrom } } : {}),
+      ...(isBoolean(remote) ? { remote: { equals: remote } } : {}),
     };
 
     // Два запроса в одной транзакции — но самой транзакции мало.
